@@ -1,0 +1,68 @@
+<div class="item-list">
+  <h2 class="title">📋 My Tasks</h2>
+
+  <!-- Search & Filter -->
+  <div class="controls">
+    <input
+      #searchInput
+      type="text"
+      placeholder="🔍 Search items..."
+      class="search-input"
+      (input)="onSearch(searchInput.value)"
+    />
+
+    <select
+      #filterSelect
+      class="filter-select"
+      (change)="onFilterChange(filterSelect.value)"
+    >
+      <option value="all">All</option>
+      <option value="todo">Todo</option>
+      <option value="done">Done</option>
+    </select>
+  </div>
+
+  <!-- Items List -->
+  <div class="items-container">
+    @for (item of items; track item.id) {
+    <div class="item-card" [class.completed]="item.completed">
+      @if (editingItem?.id === item.id) {
+      <div class="edit-form">
+        <input
+          type="text"
+          *ngIf="editingItem"
+          [(ngModel)]="editingItem.name"
+          class="form-input"
+        />
+        <textarea
+          *ngIf="editingItem"
+          [(ngModel)]="editingItem.description"
+          class="form-input"
+        ></textarea>
+        <div class="button-group">
+          <button (click)="updateItem()" class="btn btn-primary">💾 Save</button>
+          <button (click)="editingItem = null" class="btn btn-secondary">❌ Cancel</button>
+        </div>
+      </div>
+      } @else {
+      <div class="item-content">
+        <h3>{{ item.name }}</h3>
+        <p>{{ item.description }}</p>
+        <div class="item-status">
+          <strong>Status:</strong> {{ item.completed ? "✅ Completed" : "🕒 Pending" }}
+        </div>
+        <div class="item-actions">
+          <button (click)="toggleComplete(item)" class="btn btn-sm">
+            {{ item.completed ? "↩️ Mark Pending" : "✅ Mark Done" }}
+          </button>
+          <button (click)="startEditing(item)" class="btn btn-sm">✏️ Edit</button>
+          <button (click)="deleteItem(item.id)" class="btn btn-sm btn-danger">🗑️ Delete</button>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <app-add-item-form></app-add-item-form>
+</div>

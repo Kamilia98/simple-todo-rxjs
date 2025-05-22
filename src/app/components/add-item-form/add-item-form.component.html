@@ -1,0 +1,20 @@
+<!-- Add Item Form -->
+<div class="add-item-form">
+  <h3>Add New Item</h3>
+  <div class="form-group">
+    <input
+      type="text"
+      [(ngModel)]="newItem.name"
+      placeholder="Item name"
+      class="form-input"
+    />
+  </div>
+  <div class="form-group">
+    <textarea
+      [(ngModel)]="newItem.description"
+      placeholder="Item description"
+      class="form-input"
+    ></textarea>
+  </div>
+  <button (click)="addItem()" class="btn btn-primary">Add Item</button>
+</div>
