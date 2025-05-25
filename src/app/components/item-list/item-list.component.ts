@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ItemService } from '../../services/item.service';
 import { Item } from '../../models/item.model';
 import { AddItemFormComponent } from '../add-item-form/add-item-form.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-item-list',
@@ -11,17 +12,13 @@ import { AddItemFormComponent } from '../add-item-form/add-item-form.component';
   imports: [CommonModule, FormsModule, AddItemFormComponent],
   templateUrl: './item-list.component.html',
 })
-export class ItemListComponent implements OnInit {
-  items: Item[] = [];
+export class ItemListComponent {
+  items$!: Observable<Item[]>;
 
   editingItem: Item | null = null;
 
-  constructor(private itemService: ItemService) {}
-
-  ngOnInit(): void {
-    this.itemService.getFilteredItems().subscribe((items) => {
-      this.items = items;
-    });
+  constructor(private itemService: ItemService) {
+    this.items$ = this.itemService.getFilteredItems();
   }
 
   startEditing(item: Item): void {
@@ -29,6 +26,7 @@ export class ItemListComponent implements OnInit {
   }
 
   updateItem(): void {
+    console.log(this.editingItem);
     if (this.editingItem) {
       this.itemService.updateItem(this.editingItem);
       this.editingItem = null;
@@ -49,7 +47,12 @@ export class ItemListComponent implements OnInit {
   }
 
   onFilterChange(filter: string) {
-    
     this.itemService.setFilterCategory(filter);
+  }
+
+  handleNameChange(name: string) {
+    console.log(this.editingItem);
+    console.log(name);
+    this.editingItem && (this.editingItem.name = name);
   }
 }

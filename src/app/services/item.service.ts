@@ -1,31 +1,26 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { Item } from '../models/item.model';
-
+const INIT_ITEMS = [
+  { id: 1, name: 'Item 1', description: 'Description 1', completed: false },
+  { id: 2, name: 'Item 2', description: 'Description 2', completed: true },
+];
 @Injectable({
   providedIn: 'root',
 })
 export class ItemService {
-  private items: Item[] = [];
-  private itemsSubject = new BehaviorSubject<Item[]>([]);
+  private items: Item[] = INIT_ITEMS;
+  private itemsSubject = new BehaviorSubject<Item[]>(INIT_ITEMS);
 
   private searchTermSubject = new BehaviorSubject<string>('');
   private filterCategorySubject = new BehaviorSubject<string>('all');
 
-  constructor() {
-    this.items = [
-      { id: 1, name: 'Item 1', description: 'Description 1', completed: false },
-      { id: 2, name: 'Item 2', description: 'Description 2', completed: true },
-    ];
-    this.itemsSubject.next(this.items);
-  }
-
   // Observables
   getFilteredItems(): Observable<Item[]> {
     return combineLatest([
-      this.itemsSubject.asObservable(),
-      this.searchTermSubject.asObservable(),
-      this.filterCategorySubject.asObservable(),
+      this.itemsSubject,
+      this.searchTermSubject,
+      this.filterCategorySubject,
     ]).pipe(
       map(([items, searchTerm, filter]) => {
         return items.filter((item) => {
@@ -66,6 +61,7 @@ export class ItemService {
   }
 
   updateItem(updatedItem: Item): void {
+    console.log(updatedItem);
     const index = this.items.findIndex((item) => item.id === updatedItem.id);
     if (index !== -1) {
       this.items[index] = updatedItem;

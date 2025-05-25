@@ -24,14 +24,15 @@
 
   <!-- Items List -->
   <div class="items-container">
-    @for (item of items; track item.id) {
+    @for (item of (items$ | async); track item.id) {
     <div class="item-card" [class.completed]="item.completed">
       @if (editingItem?.id === item.id) {
       <div class="edit-form">
         <input
           type="text"
           *ngIf="editingItem"
-          [(ngModel)]="editingItem.name"
+          [ngModel]="editingItem.name"
+          (ngModelChange)="handleNameChange($event)"
           class="form-input"
         />
         <textarea
@@ -40,8 +41,12 @@
           class="form-input"
         ></textarea>
         <div class="button-group">
-          <button (click)="updateItem()" class="btn btn-primary">💾 Save</button>
-          <button (click)="editingItem = null" class="btn btn-secondary">❌ Cancel</button>
+          <button (click)="updateItem()" class="btn btn-primary">
+            💾 Save
+          </button>
+          <button (click)="editingItem = null" class="btn btn-secondary">
+            ❌ Cancel
+          </button>
         </div>
       </div>
       } @else {
@@ -49,14 +54,19 @@
         <h3>{{ item.name }}</h3>
         <p>{{ item.description }}</p>
         <div class="item-status">
-          <strong>Status:</strong> {{ item.completed ? "✅ Completed" : "🕒 Pending" }}
+          <strong>Status:</strong>
+          {{ item.completed ? "✅ Completed" : "🕒 Pending" }}
         </div>
         <div class="item-actions">
           <button (click)="toggleComplete(item)" class="btn btn-sm">
             {{ item.completed ? "↩️ Mark Pending" : "✅ Mark Done" }}
           </button>
-          <button (click)="startEditing(item)" class="btn btn-sm">✏️ Edit</button>
-          <button (click)="deleteItem(item.id)" class="btn btn-sm btn-danger">🗑️ Delete</button>
+          <button (click)="startEditing(item)" class="btn btn-sm">
+            ✏️ Edit
+          </button>
+          <button (click)="deleteItem(item.id)" class="btn btn-sm btn-danger">
+            🗑️ Delete
+          </button>
         </div>
       </div>
       }
